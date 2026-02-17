@@ -1,23 +1,21 @@
 import requests
 
-API_KEY = "AHB89U36GOKB7YR4"
+API_KEY = "08a5cc9c85f8439680bb3e8e4eb77a24"
 
 def fetch_xauusd_daily():
-    url = "https://www.alphavantage.co/query"
-    
+    url = "https://api.twelvedata.com/time_series"
+
     params = {
-        "function": "FX_DAILY",
-        "from_symbol": "XAU",
-        "to_symbol": "USD",
-        "apikey": API_KEY,
-        "outputsize": "compact"
+        "symbol": "XAU/USD",
+        "interval": "1day",
+        "outputsize": 50,
+        "apikey": API_KEY
     }
 
     response = requests.get(url, params=params)
     data = response.json()
 
     return data
-
 
 data = fetch_xauusd_daily()
 
