@@ -20,9 +20,7 @@ def fetch_xauusd_daily():
 
 def extract_candles(data):
     candles = data["values"]
-
-    # Reverse list so oldest candle comes first
-    candles = candles[::-1]
+    candles = candles[::-1]  # Oldest first
 
     cleaned_candles = []
 
@@ -38,9 +36,38 @@ def extract_candles(data):
     return cleaned_candles
 
 
+def detect_swings(candles):
+    swings = []
+
+    for i in range(1, len(candles) - 1):
+
+        prev_candle = candles[i - 1]
+        current_candle = candles[i]
+        next_candle = candles[i + 1]
+
+        # Swing High
+        if current_candle["high"] > prev_candle["high"] and current_candle["high"] > next_candle["high"]:
+            swings.append({
+                "type": "swing_high",
+                "price": current_candle["high"],
+                "datetime": current_candle["datetime"]
+            })
+
+        # Swing Low
+        if current_candle["low"] < prev_candle["low"] and current_candle["low"] < next_candle["low"]:
+            swings.append({
+                "type": "swing_low",
+                "price": current_candle["low"],
+                "datetime": current_candle["datetime"]
+            })
+
+    return swings
+
+
 data = fetch_xauusd_daily()
 candles = extract_candles(data)
+swings = detect_swings(candles)
 
-# Print last 10 candles
-for candle in candles[-10:]:
-    print(candle)
+# Print last 10 swings
+for swing in swings[-10:]:
+    print(swing)
